@@ -14,8 +14,9 @@ class SpotLocation(db.Model):
     lon = db.Column(db.Float, nullable=False)
     message = db.Column(db.String(200), nullable=False)
     car = db.Column(db.Integer)
-    checked_out = db.Column(db.Boolean, default=False)
+    c = db.Column(db.Boolean, default=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+    checkouts = db.relationship('CheckoutHistory', backref='location', lazy=True)
 
     def to_dict(self):
         return {
@@ -24,7 +25,20 @@ class SpotLocation(db.Model):
             'lon': self.lon,
             'message': self.message,
             'car': self.car,
-            'checked_out': self.checked_out,
+            'checkout_count': len(self.checkouts),
+            'checkout_history': [c.to_dict() for c in self.checkouts],
+            'timestamp': self.timestamp.isoformat()
+        }
+
+class CheckoutHistory(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    location_id = db.Column(db.Integer, db.ForeignKey('spot_location.id'), nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'location_id': self.location_id,
             'timestamp': self.timestamp.isoformat()
         }
 
@@ -46,7 +60,6 @@ def locations():
         if lat is None or lon is None or message is None:
             return jsonify({'error': 'Missing required fields'}), 400
 
-        # Basic coordinate validation
         if not (-90 <= lat <= 90) or not (-180 <= lon <= 180):
             return jsonify({'error': 'Invalid coordinates'}), 400
 
@@ -56,15 +69,12 @@ def locations():
 
         return jsonify(new_location.to_dict()), 201
     else:
-        # Get timeout from query parameter, default to 15 minutes
         timeout_minutes = int(request.args.get('timeout', 15))
         cutoff_time = datetime.utcnow() - timedelta(minutes=timeout_minutes)
 
-        # Delete expired locations
         SpotLocation.query.filter(SpotLocation.timestamp < cutoff_time).delete()
         db.session.commit()
 
-        # Fetch remaining locations
         locations = SpotLocation.query.all()
         return jsonify([loc.to_dict() for loc in locations])
 
@@ -74,17 +84,20 @@ def checkout_location(location_id):
     if location is None:
         return jsonify({'error': 'Location not found'}), 404
 
-    location.checked_out = True
+    # Add new checkout record
+    checkout = CheckoutHistory(location_id=location.id)
+    db.session.add(checkout)
     db.session.commit()
 
-    return jsonify(location.to_dict())
-
-# Remove the update_location route as we no longer allow moving pins
+    return jsonify({
+        'message': 'Checkout recorded',
+        'location': location.to_dict()
+    })
 
 @app.route('/create-database', methods=['GET'])
 def create_database():
     try:
-        init_db()  # Call the function to initialize the database
+        init_db()
         return jsonify({'message': 'Database initialized successfully'}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -96,8 +109,6 @@ def admin_timeout():
         if not isinstance(timeout, int) or timeout < 0:
             return jsonify({'error': 'Invalid timeout value'}), 400
 
-        # In a real application, you'd want to store this in a database
-        # For simplicity, we'll use a file here
         with open('timeout.txt', 'w') as f:
             f.write(str(timeout))
         return jsonify({'message': 'Timeout updated successfully'}), 200
@@ -106,7 +117,7 @@ def admin_timeout():
             with open('timeout.txt', 'r') as f:
                 timeout = int(f.read().strip())
         except FileNotFoundError:
-            timeout = 15  # Default to 15 minutes if file doesn't exist
+            timeout = 15
         return jsonify({'timeout': timeout})
 
 def init_db():
@@ -115,5 +126,5 @@ def init_db():
         print("Database initialized.")
 
 if __name__ == '__main__':
-    init_db()  # Initialize the database before running the app
+    init_db()
     app.run(debug=True, host='0.0.0.0', port=20778)
