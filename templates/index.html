@@ -225,9 +225,9 @@
                         var marker = L.marker([loc.lat, loc.lon], markerOptions).addTo(map);
                         markers[loc.id] = marker;
                         var popupContent = loc.message + "<br>Pinned at: " + new Date(loc.timestamp).toLocaleString();
-                        if (!loc.checked_out) {
-                            popupContent += '<br><button onclick="checkoutLocation(' + loc.id + ')">Checkout</button>';
-                        }
+
+                        popupContent += '<br><button onclick="checkoutLocation(' + loc.id + ')">Checkout</button>';
+
                         marker.bindPopup(popupContent);
                     });
                 });
