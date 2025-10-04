@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 import os
@@ -8,6 +8,7 @@ from flask import make_response
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///spot_locations.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = os.environ.get("SECRET_KEY", "dev_secret")
 db = SQLAlchemy(app)
 
 class SpotLocation(db.Model):
@@ -90,28 +91,30 @@ def locations():
 def checkin_location(location_id):
     location = SpotLocation.query.get(location_id)
     if location is None:
+        flash("Location not found", "error")
         return jsonify({'error': 'Location not found'}), 404
 
     user_id = request.cookies.get('user_id')
     if not user_id:
+        flash("User not identified", "error")
         return jsonify({'error': 'User not identified'}), 400
 
     existing = CheckinHistory.query.filter_by(location_id=location.id, user_id=user_id).first()
     if existing:
-        return jsonify({'error': 'You already checked out this location'}), 400
+        flash("You already checked in here", "error")
+        return jsonify({'error': 'You already checked in here'}), 400
 
     tags = request.json.get('tags', [])
     if not isinstance(tags, list) or not all(t in ['food', 'nature', 'sport', 'party', 'culture'] for t in tags):
+        flash("Invalid tags", "error")
         return jsonify({'error': 'Invalid tags'}), 400
 
     checkin = CheckinHistory(location_id=location.id, user_id=user_id, tags=','.join(tags))
     db.session.add(checkin)
     db.session.commit()
 
-    return jsonify({
-        'message': 'Checkin recorded',
-        'location': location.to_dict()
-    })
+    flash("Checkin recorded successfully!", "success")
+    return jsonify({'message': 'Checkin recorded', 'location': location.to_dict()})
 
 
 
