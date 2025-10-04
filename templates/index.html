@@ -301,7 +301,7 @@ function loadLocations() {
 
             locations.forEach(loc => {
                 var markerOptions = {};
-                if (loc.checkin_count > 0) {  // changed from loc.checked_out
+                if (loc.checkin_count > 0) {
                     markerOptions.icon = new L.Icon({
                         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
                         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
