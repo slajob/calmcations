@@ -16,7 +16,7 @@ class SpotLocation(db.Model):
     lon = db.Column(db.Float, nullable=False)
     name = db.Column(db.String(200), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    checkouts = db.relationship('CheckoutHistory', backref='location', lazy=True)
+    checkins = db.relationship('CheckinHistory', backref='location', lazy=True)
 
     def to_dict(self):
         return {
@@ -24,12 +24,12 @@ class SpotLocation(db.Model):
             'lat': self.lat,
             'lon': self.lon,
             'name': self.name,
-            'checkout_count': len(self.checkouts),
-            'checkout_history': [c.to_dict() for c in self.checkouts],
+            'checkin_count': len(self.checkins),
+            'checkin_history': [c.to_dict() for c in self.checkins],
             'timestamp': self.timestamp.isoformat()
         }
 
-class CheckoutHistory(db.Model):
+class CheckinHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     location_id = db.Column(db.Integer, db.ForeignKey('spot_location.id'), nullable=False)
     user_id = db.Column(db.String(64), nullable=False)  # cookie-based user id
@@ -83,8 +83,8 @@ def locations():
         locations = SpotLocation.query.all()
         return jsonify([loc.to_dict() for loc in locations])
 
-@app.route('/api/locations/<int:location_id>/checkout', methods=['POST'])
-def checkout_location(location_id):
+@app.route('/api/locations/<int:location_id>/checkin', methods=['POST'])
+def checkin_location(location_id):
     location = SpotLocation.query.get(location_id)
     if location is None:
         return jsonify({'error': 'Location not found'}), 404
@@ -94,17 +94,17 @@ def checkout_location(location_id):
         return jsonify({'error': 'User not identified'}), 400
 
     # Check if this user already checked out this location
-    existing = CheckoutHistory.query.filter_by(location_id=location.id, user_id=user_id).first()
+    existing = CheckinHistory.query.filter_by(location_id=location.id, user_id=user_id).first()
     if existing:
         return jsonify({'error': 'You already checked out this location'}), 400
 
-    # Add new checkout
-    checkout = CheckoutHistory(location_id=location.id, user_id=user_id)
-    db.session.add(checkout)
+    # Add new checkin
+    checkin = CheckinHistory(location_id=location.id, user_id=user_id)
+    db.session.add(checkin)
     db.session.commit()
 
     return jsonify({
-        'message': 'Checkout recorded',
+        'message': 'Checkin recorded',
         'location': location.to_dict()
     })
 
