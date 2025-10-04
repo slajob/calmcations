@@ -16,7 +16,7 @@ class SpotLocation(db.Model):
     lon = db.Column(db.Float, nullable=False)
     name = db.Column(db.String(200), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    checkouts = db.relationship('CheckoutHistory', backref='location', lazy=True)
+    checkins = db.relationship('CheckinHistory', backref='location', lazy=True)
 
     def to_dict(self):
         return {
@@ -24,12 +24,12 @@ class SpotLocation(db.Model):
             'lat': self.lat,
             'lon': self.lon,
             'name': self.name,
-            'checkout_count': len(self.checkouts),
-            'checkout_history': [c.to_dict() for c in self.checkouts],
+            'checkin_count': len(self.checkins),
+            'checkin_history': [c.to_dict() for c in self.checkins],
             'timestamp': self.timestamp.isoformat()
         }
 
-class CheckoutHistory(db.Model):
+class CheckinHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     location_id = db.Column(db.Integer, db.ForeignKey('spot_location.id'), nullable=False)
     user_id = db.Column(db.String(64), nullable=False)
@@ -86,8 +86,8 @@ def locations():
         locations = SpotLocation.query.all()
         return jsonify([loc.to_dict() for loc in locations])
 
-@app.route('/api/locations/<int:location_id>/checkout', methods=['POST'])
-def checkout_location(location_id):
+@app.route('/api/locations/<int:location_id>/checkin', methods=['POST'])
+def checkin_location(location_id):
     location = SpotLocation.query.get(location_id)
     if location is None:
         return jsonify({'error': 'Location not found'}), 404
@@ -109,7 +109,7 @@ def checkout_location(location_id):
     db.session.commit()
 
     return jsonify({
-        'message': 'Checkout recorded',
+        'message': 'Checkin recorded',
         'location': location.to_dict()
     })
 
