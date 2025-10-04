@@ -6,7 +6,7 @@
 	- [x] create new point
 	- [ ] checkin existing point
 		- [x] create checkin
-		- [ ] tag:
+		- [x] tag:
 	- [ ] query nearby points
 		- [ ] sorting them by
 		    - [ ] tag
