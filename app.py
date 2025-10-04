@@ -12,8 +12,7 @@ class SpotLocation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     lat = db.Column(db.Float, nullable=False)
     lon = db.Column(db.Float, nullable=False)
-    message = db.Column(db.String(200), nullable=False)
-    car = db.Column(db.Integer)
+    name = db.Column(db.String(200), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     checkouts = db.relationship('CheckoutHistory', backref='location', lazy=True)
 
@@ -22,8 +21,7 @@ class SpotLocation(db.Model):
             'id': self.id,
             'lat': self.lat,
             'lon': self.lon,
-            'message': self.message,
-            'car': self.car,
+            'name': self.name,
             'checkout_count': len(self.checkouts),
             'checkout_history': [c.to_dict() for c in self.checkouts],
             'timestamp': self.timestamp.isoformat()
@@ -54,15 +52,15 @@ def locations():
 
         lat = data.get('lat')
         lon = data.get('lon')
-        message = data.get('message')
+        name = data.get('name')
 
-        if lat is None or lon is None or message is None:
+        if lat is None or lon is None or name is None:
             return jsonify({'error': 'Missing required fields'}), 400
 
         if not (-90 <= lat <= 90) or not (-180 <= lon <= 180):
             return jsonify({'error': 'Invalid coordinates'}), 400
 
-        new_location = SpotLocation(lat=lat, lon=lon, message=message)
+        new_location = SpotLocation(lat=lat, lon=lon, name=name)
         db.session.add(new_location)
         db.session.commit()
 

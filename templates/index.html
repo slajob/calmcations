@@ -85,8 +85,7 @@
                 <button onclick="chooseLocationMethod('manual')" id="manualLocateBtn">Choose manually</button>
             </div>
             <div id="additionalInputs">
-                <input type="number" id="car" placeholder="Line number/side number">
-                <input type="text" id="message" placeholder="Pin message">
+                <input type="text" id="name" placeholder="Location name">
                 <button onclick="addSpotLocation()" id="addKanarButton">Add spot location</button>
             </div>
         </div>
@@ -148,21 +147,21 @@
         }
 
         function addSpotLocation() {
-            var message = document.getElementById('message').value;
-            if (message.trim() === "") {
+            var name = document.getElementById('name').value;
+            if (name.trim() === "") {
                 alert("Enter a description for the found spot.");
                 return;
             }
 
             if (tempMarker) {
                 var position = tempMarker.getLatLng();
-                addPin(position.lat, position.lng, message);
+                addPin(position.lat, position.lng, name);
             } else {
                 alert("First, place a pin.");
             }
         }
 
-        function addPin(lat, lon, message) {
+        function addPin(lat, lon, name) {
             fetch('/api/locations', {
                 method: 'POST',
                 headers: {
@@ -171,7 +170,7 @@
                 body: JSON.stringify({
                     lat: lat,
                     lon: lon,
-                    message: message
+                    name: name
                 }),
             })
             .then(response => response.json())
@@ -180,7 +179,7 @@
                     map.removeLayer(tempMarker);
                     tempMarker = null;
                 }
-                document.getElementById('message').value = '';
+                document.getElementById('name').value = '';
                 loadLocations();
                 map.setView([lat, lon], 15);
                 isManualPlacementMode = false;
@@ -227,7 +226,7 @@ function loadLocations() {
                 markers[loc.id] = marker;
 
                 let popupContent = `
-                    <b>${loc.message}</b><br>
+                    <b>${loc.name}</b><br>
                     Pinned at: ${new Date(loc.timestamp).toLocaleString()}<br>
                     Checkouts: <b>${loc.checkout_count}</b><br>
                     <button onclick="checkoutLocation(${loc.id})">Checkout</button>
