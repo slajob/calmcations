@@ -4,11 +4,11 @@ from datetime import datetime, timedelta
 import os
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///kanar_locations.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///spot_locations.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
-class KanarLocation(db.Model):
+class SpotLocation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     lat = db.Column(db.Float, nullable=False)
     lon = db.Column(db.Float, nullable=False)
@@ -48,7 +48,7 @@ def locations():
         if not (-90 <= lat <= 90) or not (-180 <= lon <= 180):
             return jsonify({'error': 'Invalid coordinates'}), 400
 
-        new_location = KanarLocation(lat=lat, lon=lon, message=message)
+        new_location = SpotLocation(lat=lat, lon=lon, message=message)
         db.session.add(new_location)
         db.session.commit()
 
@@ -59,11 +59,11 @@ def locations():
         cutoff_time = datetime.utcnow() - timedelta(minutes=timeout_minutes)
 
         # Delete expired locations
-        KanarLocation.query.filter(KanarLocation.timestamp < cutoff_time).delete()
+        SpotLocation.query.filter(SpotLocation.timestamp < cutoff_time).delete()
         db.session.commit()
 
         # Fetch remaining locations
-        locations = KanarLocation.query.all()
+        locations = SpotLocation.query.all()
         return jsonify([loc.to_dict() for loc in locations])
 
 # Remove the update_location route as we no longer allow moving pins
