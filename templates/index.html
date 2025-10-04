@@ -201,37 +201,43 @@
             });
         }
 
-        function loadLocations() {
-            fetch('/api/locations')
-                .then(response => response.json())
-                .then(locations => {
-                    for (var key in markers) {
-                        map.removeLayer(markers[key]);
-                    }
-                    markers = {};
+function loadLocations() {
+    fetch('/api/locations')
+        .then(response => response.json())
+        .then(locations => {
+            for (var key in markers) {
+                map.removeLayer(markers[key]);
+            }
+            markers = {};
 
-                    locations.forEach(loc => {
-                        var markerOptions = {};
-                        if (loc.checked_out) {
-                            markerOptions.icon = new L.Icon({
-                                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
-                                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                                iconSize: [25, 41],
-                                iconAnchor: [12, 41],
-                                popupAnchor: [1, -34],
-                                shadowSize: [41, 41]
-                            });
-                        }
-                        var marker = L.marker([loc.lat, loc.lon], markerOptions).addTo(map);
-                        markers[loc.id] = marker;
-                        var popupContent = loc.message + "<br>Pinned at: " + new Date(loc.timestamp).toLocaleString();
-
-                        popupContent += '<br><button onclick="checkoutLocation(' + loc.id + ')">Checkout</button>';
-
-                        marker.bindPopup(popupContent);
+            locations.forEach(loc => {
+                var markerOptions = {};
+                if (loc.checkout_count > 0) {  // changed from loc.checked_out
+                    markerOptions.icon = new L.Icon({
+                        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
+                        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        popupAnchor: [1, -34],
+                        shadowSize: [41, 41]
                     });
-                });
-        }
+                }
+
+                var marker = L.marker([loc.lat, loc.lon], markerOptions).addTo(map);
+                markers[loc.id] = marker;
+
+                let popupContent = `
+                    <b>${loc.message}</b><br>
+                    Pinned at: ${new Date(loc.timestamp).toLocaleString()}<br>
+                    Checkouts: <b>${loc.checkout_count}</b><br>
+                    <button onclick="checkoutLocation(${loc.id})">Checkout</button>
+                `;
+
+                marker.bindPopup(popupContent);
+            });
+        });
+}
+
 
         map.on('click', function(e) {
             if (isManualPlacementMode) {
