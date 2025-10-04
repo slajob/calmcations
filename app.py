@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 import os
@@ -8,6 +8,7 @@ from flask import make_response
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///spot_locations.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.secret_key = os.environ.get("SECRET_KEY", "dev_secret")
 db = SQLAlchemy(app)
 
 class SpotLocation(db.Model):
@@ -106,28 +107,30 @@ def locations():
 def checkin_location(location_id):
     location = SpotLocation.query.get(location_id)
     if location is None:
+        flash("Location not found", "error")
         return jsonify({'error': 'Location not found'}), 404
 
     user_id = request.cookies.get('user_id')
     if not user_id:
+        flash("User not identified", "error")
         return jsonify({'error': 'User not identified'}), 400
 
     existing = CheckinHistory.query.filter_by(location_id=location.id, user_id=user_id).first()
     if existing:
+        flash("You already checked in here", "error")
         return jsonify({'error': 'You already checked in this location'}), 400
 
     tags = request.json.get('tags', [])
     if not isinstance(tags, list) or not all(t in ['food', 'nature', 'sport', 'party', 'culture'] for t in tags):
+        flash("Invalid tags", "error")
         return jsonify({'error': 'Invalid tags'}), 400
 
     checkin = CheckinHistory(location_id=location.id, user_id=user_id, tags=','.join(tags))
     db.session.add(checkin)
     db.session.commit()
 
-    return jsonify({
-        'message': 'Checkin recorded',
-        'location': location.to_dict()
-    })
+    flash("Checkin recorded successfully!", "success")
+    return jsonify({'message': 'Checkin recorded', 'location': location.to_dict()})
 
 
 
@@ -156,6 +159,38 @@ def admin_timeout():
         except FileNotFoundError:
             timeout = 15
         return jsonify({'timeout': timeout})
+
+@app.route('/api/mock-data', methods=['POST'])
+def load_mock_data():
+    data = request.json
+    if not data or "locations" not in data:
+        return jsonify({"error": "Missing 'locations' key"}), 400
+
+    created_locations = []
+    for loc in data["locations"]:
+        lat = loc.get("lat")
+        lon = loc.get("lon")
+        name = loc.get("name")
+        checkins = loc.get("checkins", [])
+
+        if lat is None or lon is None or name is None:
+            continue  # skip invalid entries
+
+        location = SpotLocation(lat=lat, lon=lon, name=name)
+        db.session.add(location)
+        db.session.flush()  # get location.id before commit
+
+        for c in checkins:
+            user_id = c.get("user_id", str(uuid.uuid4()))
+            tags = ",".join(c.get("tags", []))
+            checkin = CheckinHistory(location_id=location.id, user_id=user_id, tags=tags)
+            db.session.add(checkin)
+
+        created_locations.append(location.to_dict())
+
+    db.session.commit()
+    return jsonify({"message": "Mock data loaded", "locations": created_locations}), 201
+
 
 def init_db():
     with app.app_context():

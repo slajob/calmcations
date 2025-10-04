@@ -1,0 +1,140 @@
+{
+  "locations": [
+    {
+      "lat": 50.0614,
+      "lon": 19.9366,
+      "name": "Main Market Square",
+      "checkins": [
+        { "user_id": "u1", "tags": ["culture", "food"] },
+        { "user_id": "u2", "tags": ["party", "culture"] },
+        { "user_id": "u3", "tags": ["food"] }
+      ]
+    },
+    {
+      "lat": 50.0549,
+      "lon": 19.9368,
+      "name": "Wawel Castle",
+      "checkins": [
+        { "user_id": "u4", "tags": ["culture", "nature"] },
+        { "user_id": "u5", "tags": ["culture"] }
+      ]
+    },
+    {
+      "lat": 50.0670,
+      "lon": 19.9126,
+      "name": "Kazimierz District",
+      "checkins": [
+        { "user_id": "u6", "tags": ["food", "party"] },
+        { "user_id": "u7", "tags": ["culture", "food"] }
+      ]
+    },
+    {
+      "lat": 50.0647,
+      "lon": 19.9230,
+      "name": "Planty Park",
+      "checkins": [
+        { "user_id": "u8", "tags": ["nature", "sport"] },
+        { "user_id": "u9", "tags": ["nature"] }
+      ]
+    },
+    {
+      "lat": 50.0697,
+      "lon": 19.9446,
+      "name": "Cloth Hall",
+      "checkins": [
+        { "user_id": "u10", "tags": ["culture", "food"] },
+        { "user_id": "u11", "tags": ["culture"] }
+      ]
+    },
+    {
+      "lat": 50.0542,
+      "lon": 19.9500,
+      "name": "ICE Congress Centre",
+      "checkins": [
+        { "user_id": "u12", "tags": ["culture"] },
+        { "user_id": "u13", "tags": ["party", "culture"] }
+      ]
+    },
+    {
+      "lat": 50.0735,
+      "lon": 19.9456,
+      "name": "National Museum in Krakow",
+      "checkins": [
+        { "user_id": "u14", "tags": ["culture"] },
+        { "user_id": "u15", "tags": ["culture", "food"] }
+      ]
+    },
+    {
+      "lat": 50.0875,
+      "lon": 19.8830,
+      "name": "Kościuszko Mound",
+      "checkins": [
+        { "user_id": "u16", "tags": ["nature", "sport"] },
+        { "user_id": "u17", "tags": ["nature"] }
+      ]
+    },
+    {
+      "lat": 50.0495,
+      "lon": 19.9445,
+      "name": "Kazimierz Riverside",
+      "checkins": [
+        { "user_id": "u18", "tags": ["party", "nature"] },
+        { "user_id": "u19", "tags": ["sport"] }
+      ]
+    },
+    {
+      "lat": 50.0640,
+      "lon": 19.9496,
+      "name": "Galeria Krakowska",
+      "checkins": [
+        { "user_id": "u20", "tags": ["food", "party"] },
+        { "user_id": "u21", "tags": ["culture", "food"] }
+      ]
+    },
+    {
+      "lat": 50.0844,
+      "lon": 19.9335,
+      "name": "Krakow Zoo",
+      "checkins": [
+        { "user_id": "u22", "tags": ["nature", "sport"] },
+        { "user_id": "u23", "tags": ["nature", "food"] }
+      ]
+    },
+    {
+      "lat": 50.0593,
+      "lon": 19.9356,
+      "name": "Podgórze District",
+      "checkins": [
+        { "user_id": "u24", "tags": ["culture", "party"] },
+        { "user_id": "u25", "tags": ["food"] }
+      ]
+    },
+    {
+      "lat": 50.0643,
+      "lon": 19.9323,
+      "name": "St. Mary's Basilica",
+      "checkins": [
+        { "user_id": "u26", "tags": ["culture"] },
+        { "user_id": "u27", "tags": ["culture", "nature"] }
+      ]
+    },
+    {
+      "lat": 50.0622,
+      "lon": 19.9400,
+      "name": "Juliusz Słowacki Theatre",
+      "checkins": [
+        { "user_id": "u28", "tags": ["culture"] },
+        { "user_id": "u29", "tags": ["party", "culture"] }
+      ]
+    },
+    {
+      "lat": 50.0467,
+      "lon": 19.9234,
+      "name": "Zakrzówek Lagoon",
+      "checkins": [
+        { "user_id": "u30", "tags": ["nature", "sport"] },
+        { "user_id": "u31", "tags": ["nature", "party"] }
+      ]
+    }
+  ]
+}
