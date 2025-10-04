@@ -81,12 +81,12 @@
         <div id="map"></div>
         <div class="input-group">
             <div class="location-buttons">
-                <button onclick="chooseLocationMethod('auto')" id="autoLocateBtn">Zlokalizuj mnie</button>
-                <button onclick="chooseLocationMethod('manual')" id="manualLocateBtn">Wybierz ręcznie</button>
+                <button onclick="chooseLocationMethod('auto')" id="autoLocateBtn">Locate me</button>
+                <button onclick="chooseLocationMethod('manual')" id="manualLocateBtn">Choose manually</button>
             </div>
             <div id="additionalInputs">
-                <input type="number" id="car" placeholder="Numer lini/numer boczny">
-                <input type="text" id="message" placeholder="Wiadomosc pinezki">
+                <input type="number" id="car" placeholder="Line number/side number">
+                <input type="text" id="message" placeholder="Pin message">
                 <button onclick="addSpotLocation()" id="addKanarButton">Add spot location</button>
             </div>
         </div>
@@ -129,14 +129,14 @@
                     alert("Error: " + error.message);
                 });
             } else {
-                alert("Geolokalizacja nie jest wspierana przez twoją przeglądarkę.");
+                alert("Geolocation is not supported by your browser.");
             }
         }
 
         function startManualPlacement() {
             isManualPlacementMode = true;
             map.getContainer().style.cursor = 'crosshair';
-            alert("Wybierz na mapie miejsce pinezki.");
+            alert("Select a location for the pin on the map.");
         }
 
         function placeTempMarker(lat, lon) {
@@ -144,7 +144,7 @@
                 map.removeLayer(tempMarker);
             }
             tempMarker = L.marker([lat, lon], {draggable: true}).addTo(map);
-            tempMarker.bindPopup("Chwyć i przesuń pinezkę").openPopup();
+            tempMarker.bindPopup("Grab and move the pin").openPopup();
         }
 
         function addSpotLocation() {
@@ -158,7 +158,7 @@
                 var position = tempMarker.getLatLng();
                 addPin(position.lat, position.lng, message);
             } else {
-                alert("Najpierw umieść pinezkę.");
+                alert("First, place a pin.");
             }
         }
 
