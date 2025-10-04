@@ -190,15 +190,20 @@
             });
         }
 
-        function checkoutLocation(locationId) {
-            fetch('/api/locations/' + locationId + '/checkout', {
-                method: 'POST',
-            })
-            .then(response => response.json())
-            .then(data => {
-                loadLocations();
-            });
+function checkoutLocation(locationId) {
+    fetch('/api/locations/' + locationId + '/checkout', {
+        method: 'POST',
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            alert(data.error);
+        } else {
+            loadLocations();
         }
+    });
+}
+
 
 function loadLocations() {
     fetch('/api/locations')
@@ -236,6 +241,7 @@ function loadLocations() {
             });
         });
 }
+
 
 
         map.on('click', function(e) {
