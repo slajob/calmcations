@@ -32,7 +32,8 @@ class SpotLocation(db.Model):
 class CheckinHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     location_id = db.Column(db.Integer, db.ForeignKey('spot_location.id'), nullable=False)
-    user_id = db.Column(db.String(64), nullable=False)  # cookie-based user id
+    user_id = db.Column(db.String(64), nullable=False)
+    tags = db.Column(db.String(200), nullable=True)  # comma-separated tags
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     def to_dict(self):
@@ -40,8 +41,10 @@ class CheckinHistory(db.Model):
             'id': self.id,
             'location_id': self.location_id,
             'user_id': self.user_id,
+            'tags': self.tags.split(',') if self.tags else [],
             'timestamp': self.timestamp.isoformat()
         }
+
 
 @app.route('/')
 def index():
@@ -93,13 +96,15 @@ def checkin_location(location_id):
     if not user_id:
         return jsonify({'error': 'User not identified'}), 400
 
-    # Check if this user already checked out this location
     existing = CheckinHistory.query.filter_by(location_id=location.id, user_id=user_id).first()
     if existing:
         return jsonify({'error': 'You already checked out this location'}), 400
 
-    # Add new checkin
-    checkin = CheckinHistory(location_id=location.id, user_id=user_id)
+    tags = request.json.get('tags', [])
+    if not isinstance(tags, list) or not all(t in ['food', 'nature', 'sport', 'party', 'culture'] for t in tags):
+        return jsonify({'error': 'Invalid tags'}), 400
+
+    checkin = CheckinHistory(location_id=location.id, user_id=user_id, tags=','.join(tags))
     db.session.add(checkin)
     db.session.commit()
 
@@ -107,6 +112,7 @@ def checkin_location(location_id):
         'message': 'Checkin recorded',
         'location': location.to_dict()
     })
+
 
 
 @app.route('/create-database', methods=['GET'])
