@@ -14,6 +14,7 @@ class SpotLocation(db.Model):
     lon = db.Column(db.Float, nullable=False)
     message = db.Column(db.String(200), nullable=False)
     car = db.Column(db.Integer)
+    checked_out = db.Column(db.Boolean, default=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     def to_dict(self):
@@ -23,6 +24,7 @@ class SpotLocation(db.Model):
             'lon': self.lon,
             'message': self.message,
             'car': self.car,
+            'checked_out': self.checked_out,
             'timestamp': self.timestamp.isoformat()
         }
 
@@ -65,6 +67,17 @@ def locations():
         # Fetch remaining locations
         locations = SpotLocation.query.all()
         return jsonify([loc.to_dict() for loc in locations])
+
+@app.route('/api/locations/<int:location_id>/checkout', methods=['POST'])
+def checkout_location(location_id):
+    location = SpotLocation.query.get(location_id)
+    if location is None:
+        return jsonify({'error': 'Location not found'}), 404
+
+    location.checked_out = True
+    db.session.commit()
+
+    return jsonify(location.to_dict())
 
 # Remove the update_location route as we no longer allow moving pins
 
