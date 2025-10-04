@@ -98,7 +98,7 @@ def checkin_location(location_id):
 
     existing = CheckinHistory.query.filter_by(location_id=location.id, user_id=user_id).first()
     if existing:
-        return jsonify({'error': 'You already checked out this location'}), 400
+        return jsonify({'error': 'You already checked in this location'}), 400
 
     tags = request.json.get('tags', [])
     if not isinstance(tags, list) or not all(t in ['food', 'nature', 'sport', 'party', 'culture'] for t in tags):
