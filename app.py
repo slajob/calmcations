@@ -1,12 +1,27 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import os
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///spot_locations.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'supersecretkey'  # needed for sessions
+
 db = SQLAlchemy(app)
+
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
+    password_hash = db.Column(db.String(200), nullable=False)
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
 class SpotLocation(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -32,18 +47,78 @@ class SpotLocation(db.Model):
 class CheckoutHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     location_id = db.Column(db.Integer, db.ForeignKey('spot_location.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+
+    user = db.relationship('User', backref='checkouts', lazy=True)
 
     def to_dict(self):
         return {
             'id': self.id,
             'location_id': self.location_id,
+            'user_id': self.user_id,
+            'username': self.user.username if self.user else None,
             'timestamp': self.timestamp.isoformat()
         }
 
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    username = session.get('username')  # get username from session if logged in
+    return render_template('index.html', username=username)
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        if User.query.filter_by(username=username).first():
+            flash('Username already exists!', 'danger')
+            return redirect(url_for('register'))
+
+        new_user = User(username=username)
+        new_user.set_password(password)
+        db.session.add(new_user)
+        db.session.commit()
+        flash('Registration successful! Please login.', 'success')
+        return redirect(url_for('login'))
+
+    return render_template('register.html')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        print("Login attempt:", username, password)
+
+        user = User.query.filter_by(username=username).first()
+        print("Found user:", user)
+
+        if user:
+            print("Password check:", user.check_password(password))
+        else:
+            print("User not found")
+
+        if user and user.check_password(password):
+            session['user_id'] = user.id
+            session['username'] = user.username
+            flash('Logged in successfully!', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Invalid username or password', 'danger')
+
+    return render_template('login.html')
+
+
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('login'))
 
 @app.route('/api/locations', methods=['GET', 'POST'])
 def locations():
@@ -79,12 +154,21 @@ def locations():
 
 @app.route('/api/locations/<int:location_id>/checkout', methods=['POST'])
 def checkout_location(location_id):
+    if 'user_id' not in session:
+        return jsonify({'error': 'You must be logged in to checkout'}), 401
+
     location = SpotLocation.query.get(location_id)
     if location is None:
         return jsonify({'error': 'Location not found'}), 404
 
-    # Add new checkout record
-    checkout = CheckoutHistory(location_id=location.id)
+    user_id = session['user_id']
+
+    # Optionally, prevent multiple checkouts per user per location:
+    existing_checkout = CheckoutHistory.query.filter_by(location_id=location_id, user_id=user_id).first()
+    if existing_checkout:
+        return jsonify({'error': 'You have already checked out this location'}), 400
+
+    checkout = CheckoutHistory(location_id=location.id, user_id=user_id)
     db.session.add(checkout)
     db.session.commit()
 
@@ -92,6 +176,7 @@ def checkout_location(location_id):
         'message': 'Checkout recorded',
         'location': location.to_dict()
     })
+
 
 @app.route('/create-database', methods=['GET'])
 def create_database():
