@@ -190,7 +190,7 @@
             });
         }
 
-function checkoutLocation(locationId) {
+function checkinLocation(locationId) {
     let popup = document.createElement('div');
     popup.id = 'tagPopup';
     popup.style.position = 'fixed';
@@ -206,7 +206,7 @@ function checkoutLocation(locationId) {
     popup.style.fontFamily = 'Arial, sans-serif';
 
     popup.innerHTML = `
-        <h3 style="margin-top:0; text-align:center;">Select tags for checkout</h3>
+        <h3 style="margin-top:0; text-align:center;">Select tags for checkin</h3>
         <form id="tagForm" style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center;">
             <label class="tagOption"><input type="checkbox" name="tags" value="food"> Food</label>
             <label class="tagOption"><input type="checkbox" name="tags" value="nature"> Nature</label>
@@ -271,7 +271,7 @@ function checkoutLocation(locationId) {
             return;
         }
 
-        fetch('/api/locations/' + locationId + '/checkout', {
+        fetch('/api/locations/' + locationId + '/checkin', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ tags: selected })

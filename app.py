@@ -96,7 +96,7 @@ def checkin_location(location_id):
     if not user_id:
         return jsonify({'error': 'User not identified'}), 400
 
-    existing = CheckoutHistory.query.filter_by(location_id=location.id, user_id=user_id).first()
+    existing = CheckinHistory.query.filter_by(location_id=location.id, user_id=user_id).first()
     if existing:
         return jsonify({'error': 'You already checked out this location'}), 400
 
@@ -104,8 +104,8 @@ def checkin_location(location_id):
     if not isinstance(tags, list) or not all(t in ['food', 'nature', 'sport', 'party', 'culture'] for t in tags):
         return jsonify({'error': 'Invalid tags'}), 400
 
-    checkout = CheckoutHistory(location_id=location.id, user_id=user_id, tags=','.join(tags))
-    db.session.add(checkout)
+    checkin = CheckinHistory(location_id=location.id, user_id=user_id, tags=','.join(tags))
+    db.session.add(checkin)
     db.session.commit()
 
     return jsonify({
