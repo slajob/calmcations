@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 import os
+import uuid
+from flask import make_response
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///spot_locations.db'
@@ -32,18 +34,24 @@ class SpotLocation(db.Model):
 class CheckoutHistory(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     location_id = db.Column(db.Integer, db.ForeignKey('spot_location.id'), nullable=False)
+    user_id = db.Column(db.String(64), nullable=False)  # cookie-based user id
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
 
     def to_dict(self):
         return {
             'id': self.id,
             'location_id': self.location_id,
+            'user_id': self.user_id,
             'timestamp': self.timestamp.isoformat()
         }
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    resp = make_response(render_template('index.html'))
+    if not request.cookies.get('user_id'):
+        user_id = str(uuid.uuid4())  # random unique id
+        resp.set_cookie('user_id', user_id, max_age=60*60*24*365)  # 1 year
+    return resp
 
 @app.route('/api/locations', methods=['GET', 'POST'])
 def locations():
@@ -83,8 +91,17 @@ def checkout_location(location_id):
     if location is None:
         return jsonify({'error': 'Location not found'}), 404
 
-    # Add new checkout record
-    checkout = CheckoutHistory(location_id=location.id)
+    user_id = request.cookies.get('user_id')
+    if not user_id:
+        return jsonify({'error': 'User not identified'}), 400
+
+    # Check if this user already checked out this location
+    existing = CheckoutHistory.query.filter_by(location_id=location.id, user_id=user_id).first()
+    if existing:
+        return jsonify({'error': 'You already checked out this location'}), 400
+
+    # Add new checkout
+    checkout = CheckoutHistory(location_id=location.id, user_id=user_id)
     db.session.add(checkout)
     db.session.commit()
 
@@ -92,6 +109,7 @@ def checkout_location(location_id):
         'message': 'Checkout recorded',
         'location': location.to_dict()
     })
+
 
 @app.route('/create-database', methods=['GET'])
 def create_database():
