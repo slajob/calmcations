@@ -14,7 +14,6 @@ class SpotLocation(db.Model):
     lon = db.Column(db.Float, nullable=False)
     message = db.Column(db.String(200), nullable=False)
     car = db.Column(db.Integer)
-    c = db.Column(db.Boolean, default=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     checkouts = db.relationship('CheckoutHistory', backref='location', lazy=True)
 
