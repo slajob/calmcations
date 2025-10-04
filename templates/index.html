@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mapa Kanarków</title>
+    <title>Spot Map</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
     <style>
@@ -76,7 +76,7 @@
     </style>
 </head>
 <body>
-    <h1>Gdzie Kanarek</h1>
+    <h1>Where is the Spot</h1>
     <div class="content-wrapper">
         <div id="map"></div>
         <div class="input-group">
@@ -87,7 +87,7 @@
             <div id="additionalInputs">
                 <input type="number" id="car" placeholder="Numer lini/numer boczny">
                 <input type="text" id="message" placeholder="Wiadomosc pinezki">
-                <button onclick="addKanarLocation()" id="addKanarButton">Dodaj lokalizacje kanara</button>
+                <button onclick="addSpotLocation()" id="addKanarButton">Add spot location</button>
             </div>
         </div>
     </div>
@@ -147,10 +147,10 @@
             tempMarker.bindPopup("Chwyć i przesuń pinezkę").openPopup();
         }
 
-        function addKanarLocation() {
+        function addSpotLocation() {
             var message = document.getElementById('message').value;
             if (message.trim() === "") {
-                alert("Wpisz opis znalezionego kanarka.");
+                alert("Enter a description for the found spot.");
                 return;
             }
 
