@@ -100,7 +100,21 @@ def locations():
         return jsonify(new_location.to_dict()), 201
     else:
         locations = SpotLocation.query.all()
-        return jsonify([loc.to_dict() for loc in locations])
+        locations = [loc.to_dict() for loc in locations]
+        aggregate_checkins(locations)
+        return jsonify(locations)
+
+
+
+def aggregate_checkins(locations):
+    max_age = timedelta(days=20).total_seconds()
+    now = datetime.utcnow()
+    for location in locations:
+        heatscore = 0
+        for checkin in location["checkin_history"]:
+            age = now - datetime.fromisoformat(checkin["timestamp"])
+            heatscore += max(max_age - age.total_seconds(), 0) / max_age
+        location["scores"] ={"heat": heatscore}
 
 
 @app.route('/api/locations/<int:location_id>/checkin', methods=['POST'])
