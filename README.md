@@ -2,6 +2,8 @@
 
 This concept was developed during the [hackyeah 2025](https://hackyeah.pl) hackaton.
 
+Live demo: https://hotspot.slajob.dev/
+
 the task was:
 
 > Reimagine the way we explore the world! Whether it’s making travel safer, more sustainable,
