@@ -363,12 +363,53 @@
                     var marker = L.marker([loc.lat, loc.lon], markerOptions).addTo(map);
                     markers[loc.id] = marker;
 
-                    let popupContent = `
-                        <b>${loc.name}</b><br>
-                        Pinned at: ${new Date(loc.timestamp).toLocaleString()}<br>
-                        Checkins: <b>${loc.checkin_count}</b><br>
-                        <button onclick="checkinLocation(${loc.id})">Checkin</button>
+                let popupContent = `
+                    <b>${loc.name}</b><br>
+                    Pinned at: ${new Date(loc.timestamp).toLocaleString()}<br>
+                    Checkins: <b>${loc.checkin_count}</b><br>
+                `;
+
+                if (loc.most_common_tag) {
+                    popupContent += `<p><b>Most popular tag:</b> ${loc.most_common_tag}</p>`;
+                }
+
+                if (loc.tag_percentages && Object.keys(loc.tag_percentages).length > 0) {
+                    // Tag colors
+                    const tagColors = {
+                        food: "#FFA500",
+                        nature: "#4CAF50",
+                        sport: "#2196F3",
+                        party: "#9C27B0",
+                        culture: "#FF5722"
+                    };
+
+                    // Stacked bar
+                    popupContent += `
+                        <div style="background:#eee; border-radius:6px; overflow:hidden; height:16px; display:flex; margin-bottom:8px;">
                     `;
+                    for (const [tag, percent] of Object.entries(loc.tag_percentages)) {
+                        let color = tagColors[tag] || "#888";
+                        popupContent += `
+                            <div style="width:${percent}%; background:${color}; height:100%;" title="${tag} ${percent}%"></div>
+                        `;
+                    }
+                    popupContent += `</div>`;
+
+                    // Legend
+                    popupContent += `<div style="font-size:12px; line-height:1.4;">`;
+                    for (const [tag, percent] of Object.entries(loc.tag_percentages)) {
+                        let color = tagColors[tag] || "#888";
+                        popupContent += `
+                            <div style="display:flex; align-items:center; margin-bottom:2px;">
+                                <span style="display:inline-block; width:12px; height:12px; background:${color}; margin-right:6px; border-radius:2px;"></span>
+                                ${tag}: ${percent}%
+                            </div>
+                        `;
+                    }
+                    popupContent += `</div>`;
+                }
+
+                popupContent += `<button onclick="checkinLocation(${loc.id})">Checkin</button>`;
 
                     marker.bindPopup(popupContent);
                 });

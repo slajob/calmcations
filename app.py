@@ -20,6 +20,25 @@ class SpotLocation(db.Model):
     checkins = db.relationship('CheckinHistory', backref='location', lazy=True)
 
     def to_dict(self):
+        tag_counts = {}
+        total_tags = 0
+        for c in self.checkins:
+            if c.tags:
+                for t in c.tags.split(','):
+                    t = t.strip()
+                    if t:
+                        tag_counts[t] = tag_counts.get(t, 0) + 1
+                        total_tags += 1
+
+        tag_percentages = {}
+        if total_tags > 0:
+            for tag, count in tag_counts.items():
+                tag_percentages[tag] = round((count / total_tags) * 100, 1)
+
+        most_common_tag = None
+        if tag_counts:
+            most_common_tag = max(tag_counts, key=tag_counts.get)
+
         return {
             'id': self.id,
             'lat': self.lat,
@@ -27,7 +46,9 @@ class SpotLocation(db.Model):
             'name': self.name,
             'checkin_count': len(self.checkins),
             'checkin_history': [c.to_dict() for c in self.checkins],
-            'timestamp': self.timestamp.isoformat()
+            'timestamp': self.timestamp.isoformat(),
+            'tag_percentages': tag_percentages,
+            'most_common_tag': most_common_tag
         }
 
 class CheckinHistory(db.Model):
@@ -78,14 +99,9 @@ def locations():
 
         return jsonify(new_location.to_dict()), 201
     else:
-        # timeout_minutes = int(request.args.get('timeout', 15))
-        # cutoff_time = datetime.utcnow() - timedelta(minutes=timeout_minutes)
-
-        # SpotLocation.query.filter(SpotLocation.timestamp < cutoff_time).delete()
-        # db.session.commit()
-
         locations = SpotLocation.query.all()
         return jsonify([loc.to_dict() for loc in locations])
+
 
 @app.route('/api/locations/<int:location_id>/checkin', methods=['POST'])
 def checkin_location(location_id):
