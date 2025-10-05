@@ -78,11 +78,11 @@ def locations():
 
         return jsonify(new_location.to_dict()), 201
     else:
-        timeout_minutes = int(request.args.get('timeout', 15))
-        cutoff_time = datetime.utcnow() - timedelta(minutes=timeout_minutes)
+        # timeout_minutes = int(request.args.get('timeout', 15))
+        # cutoff_time = datetime.utcnow() - timedelta(minutes=timeout_minutes)
 
-        SpotLocation.query.filter(SpotLocation.timestamp < cutoff_time).delete()
-        db.session.commit()
+        # SpotLocation.query.filter(SpotLocation.timestamp < cutoff_time).delete()
+        # db.session.commit()
 
         locations = SpotLocation.query.all()
         return jsonify([loc.to_dict() for loc in locations])
