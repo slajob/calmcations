@@ -4,28 +4,21 @@
       "lat": 50.0614,
       "lon": 19.9366,
       "name": "Main Market Square",
+      "timestamp": "2025-09-19T18:00:00.000000",
       "checkins": [
         {
           "user_id": "u1",
-          "tags": [
-            "culture",
-            "food"
-          ],
+          "tags": ["culture", "food"],
           "timestamp": "2025-09-20T19:00:09.000000"
         },
         {
           "user_id": "u2",
-          "tags": [
-            "party",
-            "culture"
-          ],
+          "tags": ["party", "culture"],
           "timestamp": "2025-09-22T00:00:00.000000"
         },
         {
           "user_id": "u3",
-          "tags": [
-            "food"
-          ],
+          "tags": ["food"],
           "timestamp": "2025-09-25T12:00:00.000000"
         }
       ]
@@ -34,20 +27,16 @@
       "lat": 50.0549,
       "lon": 19.9368,
       "name": "Wawel Castle",
+      "timestamp": "2025-09-18T17:30:00.000000",
       "checkins": [
         {
           "user_id": "u4",
-          "tags": [
-            "culture",
-            "nature"
-          ],
+          "tags": ["culture", "nature"],
           "timestamp": "2025-09-28T08:00:00.000000"
         },
         {
           "user_id": "u5",
-          "tags": [
-            "culture"
-          ],
+          "tags": ["culture"],
           "timestamp": "2025-09-21T15:00:00.000000"
         }
       ]
@@ -56,21 +45,16 @@
       "lat": 50.067,
       "lon": 19.9126,
       "name": "Kazimierz District",
+      "timestamp": "2025-09-19T09:00:00.000000",
       "checkins": [
         {
           "user_id": "u6",
-          "tags": [
-            "food",
-            "party"
-          ],
+          "tags": ["food", "party"],
           "timestamp": "2025-09-23T20:00:00.000000"
         },
         {
           "user_id": "u7",
-          "tags": [
-            "culture",
-            "food"
-          ],
+          "tags": ["culture", "food"],
           "timestamp": "2025-09-26T10:00:00.000000"
         }
       ]
@@ -79,20 +63,16 @@
       "lat": 50.0647,
       "lon": 19.923,
       "name": "Planty Park",
+      "timestamp": "2025-09-18T13:00:00.000000",
       "checkins": [
         {
           "user_id": "u8",
-          "tags": [
-            "nature",
-            "sport"
-          ],
+          "tags": ["nature", "sport"],
           "timestamp": "2025-09-29T14:00:00.000000"
         },
         {
           "user_id": "u9",
-          "tags": [
-            "nature"
-          ],
+          "tags": ["nature"],
           "timestamp": "2025-09-24T09:00:00.000000"
         }
       ]
@@ -101,20 +81,16 @@
       "lat": 50.0697,
       "lon": 19.9446,
       "name": "Cloth Hall",
+      "timestamp": "2025-09-20T10:00:00.000000",
       "checkins": [
         {
           "user_id": "u10",
-          "tags": [
-            "culture",
-            "food"
-          ],
+          "tags": ["culture", "food"],
           "timestamp": "2025-09-27T18:00:00.000000"
         },
         {
           "user_id": "u11",
-          "tags": [
-            "culture"
-          ],
+          "tags": ["culture"],
           "timestamp": "2025-09-20T11:00:00.000000"
         }
       ]
@@ -123,20 +99,16 @@
       "lat": 50.0542,
       "lon": 19.95,
       "name": "ICE Congress Centre",
+      "timestamp": "2025-09-18T15:00:00.000000",
       "checkins": [
         {
           "user_id": "u12",
-          "tags": [
-            "culture"
-          ],
+          "tags": ["culture"],
           "timestamp": "2025-09-22T16:00:00.000000"
         },
         {
           "user_id": "u13",
-          "tags": [
-            "party",
-            "culture"
-          ],
+          "tags": ["party", "culture"],
           "timestamp": "2025-09-25T22:00:00.000000"
         }
       ]
@@ -145,20 +117,16 @@
       "lat": 50.0735,
       "lon": 19.9456,
       "name": "National Museum in Krakow",
+      "timestamp": "2025-09-19T11:00:00.000000",
       "checkins": [
         {
           "user_id": "u14",
-          "tags": [
-            "culture"
-          ],
+          "tags": ["culture"],
           "timestamp": "2025-09-28T13:00:00.000000"
         },
         {
           "user_id": "u15",
-          "tags": [
-            "culture",
-            "food"
-          ],
+          "tags": ["culture", "food"],
           "timestamp": "2025-09-21T07:00:00.000000"
         }
       ]
@@ -167,20 +135,16 @@
       "lat": 50.0875,
       "lon": 19.883,
       "name": "Kościuszko Mound",
+      "timestamp": "2025-09-17T12:00:00.000000",
       "checkins": [
         {
           "user_id": "u16",
-          "tags": [
-            "nature",
-            "sport"
-          ],
+          "tags": ["nature", "sport"],
           "timestamp": "2025-09-23T08:00:00.000000"
         },
         {
           "user_id": "u17",
-          "tags": [
-            "nature"
-          ],
+          "tags": ["nature"],
           "timestamp": "2025-09-26T17:00:00.000000"
         }
       ]
@@ -189,20 +153,16 @@
       "lat": 50.0495,
       "lon": 19.9445,
       "name": "Kazimierz Riverside",
+      "timestamp": "2025-09-20T16:00:00.000000",
       "checkins": [
         {
           "user_id": "u18",
-          "tags": [
-            "party",
-            "nature"
-          ],
+          "tags": ["party", "nature"],
           "timestamp": "2025-09-29T21:00:00.000000"
         },
         {
           "user_id": "u19",
-          "tags": [
-            "sport"
-          ],
+          "tags": ["sport"],
           "timestamp": "2025-09-24T10:00:00.000000"
         }
       ]
@@ -211,21 +171,16 @@
       "lat": 50.064,
       "lon": 19.9496,
       "name": "Galeria Krakowska",
+      "timestamp": "2025-09-19T20:00:00.000000",
       "checkins": [
         {
           "user_id": "u20",
-          "tags": [
-            "food",
-            "party"
-          ],
+          "tags": ["food", "party"],
           "timestamp": "2025-09-27T14:00:00.000000"
         },
         {
           "user_id": "u21",
-          "tags": [
-            "culture",
-            "food"
-          ],
+          "tags": ["culture", "food"],
           "timestamp": "2025-09-20T09:00:00.000000"
         }
       ]
@@ -234,21 +189,16 @@
       "lat": 50.0844,
       "lon": 19.9335,
       "name": "Krakow Zoo",
+      "timestamp": "2025-09-18T10:00:00.000000",
       "checkins": [
         {
           "user_id": "u22",
-          "tags": [
-            "nature",
-            "sport"
-          ],
+          "tags": ["nature", "sport"],
           "timestamp": "2025-09-22T11:00:00.000000"
         },
         {
           "user_id": "u23",
-          "tags": [
-            "nature",
-            "food"
-          ],
+          "tags": ["nature", "food"],
           "timestamp": "2025-09-25T19:00:00.000000"
         }
       ]
@@ -257,20 +207,16 @@
       "lat": 50.0593,
       "lon": 19.9356,
       "name": "Podgórze District",
+      "timestamp": "2025-09-19T08:00:00.000000",
       "checkins": [
         {
           "user_id": "u24",
-          "tags": [
-            "culture",
-            "party"
-          ],
+          "tags": ["culture", "party"],
           "timestamp": "2025-09-28T16:00:00.000000"
         },
         {
           "user_id": "u25",
-          "tags": [
-            "food"
-          ],
+          "tags": ["food"],
           "timestamp": "2025-09-21T12:00:00.000000"
         }
       ]
@@ -279,20 +225,16 @@
       "lat": 50.0643,
       "lon": 19.9323,
       "name": "St. Mary's Basilica",
+      "timestamp": "2025-09-18T09:00:00.000000",
       "checkins": [
         {
           "user_id": "u26",
-          "tags": [
-            "culture"
-          ],
+          "tags": ["culture"],
           "timestamp": "2025-09-23T15:00:00.000000"
         },
         {
           "user_id": "u27",
-          "tags": [
-            "culture",
-            "nature"
-          ],
+          "tags": ["culture", "nature"],
           "timestamp": "2025-09-26T09:00:00.000000"
         }
       ]
@@ -301,20 +243,16 @@
       "lat": 50.0622,
       "lon": 19.94,
       "name": "Juliusz Słowacki Theatre",
+      "timestamp": "2025-09-20T12:00:00.000000",
       "checkins": [
         {
           "user_id": "u28",
-          "tags": [
-            "culture"
-          ],
+          "tags": ["culture"],
           "timestamp": "2025-09-29T18:00:00.000000"
         },
         {
           "user_id": "u29",
-          "tags": [
-            "party",
-            "culture"
-          ],
+          "tags": ["party", "culture"],
           "timestamp": "2025-09-24T14:00:00.000000"
         }
       ]
@@ -323,21 +261,16 @@
       "lat": 50.0467,
       "lon": 19.9234,
       "name": "Zakrzówek Lagoon",
+      "timestamp": "2025-09-17T14:00:00.000000",
       "checkins": [
         {
           "user_id": "u30",
-          "tags": [
-            "nature",
-            "sport"
-          ],
+          "tags": ["nature", "sport"],
           "timestamp": "2025-09-27T10:00:00.000000"
         },
         {
           "user_id": "u31",
-          "tags": [
-            "nature",
-            "party"
-          ],
+          "tags": ["nature", "party"],
           "timestamp": "2025-09-20T23:00:00.000000"
         }
       ]

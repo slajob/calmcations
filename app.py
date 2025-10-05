@@ -160,7 +160,12 @@ def load_mock_data():
         if lat is None or lon is None or name is None:
             continue  # skip invalid entries
 
-        location = SpotLocation(lat=lat, lon=lon, name=name)
+        # location = SpotLocation(lat=lat, lon=lon, name=name)
+        timestamp = None
+        if "timestamp" in loc:
+            timestamp = datetime.fromisoformat(loc["timestamp"])
+        location = SpotLocation(lat=lat, lon=lon, name=name, timestamp=timestamp or datetime.utcnow())
+
         db.session.add(location)
         db.session.flush()  # get location.id before commit
 
