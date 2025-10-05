@@ -20,6 +20,14 @@ class SpotLocation(db.Model):
     checkins = db.relationship('CheckinHistory', backref='location', lazy=True)
 
     def to_dict(self):
+        max_age = timedelta(days=15).total_seconds()
+        now = datetime.utcnow()
+
+        heatscore = 0
+        for checkin in self.checkins:
+            age = now - checkin.timestamp
+            heatscore += max(max_age - age.total_seconds(), 0) / max_age
+
         tag_counts = {}
         total_tags = 0
         for c in self.checkins:
@@ -48,7 +56,8 @@ class SpotLocation(db.Model):
             'checkin_history': [c.to_dict() for c in self.checkins],
             'timestamp': self.timestamp.isoformat(),
             'tag_percentages': tag_percentages,
-            'most_common_tag': most_common_tag
+            'most_common_tag': most_common_tag,
+            'heatscore': heatscore
         }
 
 class CheckinHistory(db.Model):
@@ -100,22 +109,7 @@ def locations():
         return jsonify(new_location.to_dict()), 201
     else:
         locations = SpotLocation.query.all()
-        locations = [loc.to_dict() for loc in locations]
-        aggregate_checkins(locations)
-        return jsonify(locations)
-
-
-
-def aggregate_checkins(locations):
-    max_age = timedelta(days=20).total_seconds()
-    now = datetime.utcnow()
-    for location in locations:
-        heatscore = 0
-        for checkin in location["checkin_history"]:
-            age = now - datetime.fromisoformat(checkin["timestamp"])
-            heatscore += max(max_age - age.total_seconds(), 0) / max_age
-        location["heatscore"] = heatscore
-
+        return jsonify([loc.to_dict() for loc in locations])
 
 @app.route('/api/locations/<int:location_id>/checkin', methods=['POST'])
 def checkin_location(location_id):
