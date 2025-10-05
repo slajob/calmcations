@@ -167,7 +167,12 @@ def load_mock_data():
         for c in checkins:
             user_id = c.get("user_id", str(uuid.uuid4()))
             tags = ",".join(c.get("tags", []))
-            checkin = CheckinHistory(location_id=location.id, user_id=user_id, tags=tags)
+            timestamp = None
+            if "timestamp" in c:
+                timestamp  = datetime.fromisoformat(c.get("timestamp"))
+            else:
+                timestamp = datetime.utcnow()
+            checkin = CheckinHistory(location_id=location.id, user_id=user_id, tags=tags, timestamp=timestamp)
             db.session.add(checkin)
 
         created_locations.append(location.to_dict())
