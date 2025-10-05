@@ -114,7 +114,7 @@ def aggregate_checkins(locations):
         for checkin in location["checkin_history"]:
             age = now - datetime.fromisoformat(checkin["timestamp"])
             heatscore += max(max_age - age.total_seconds(), 0) / max_age
-        location["scores"] ={"heat": heatscore}
+        location["heatscore"] = heatscore
 
 
 @app.route('/api/locations/<int:location_id>/checkin', methods=['POST'])
