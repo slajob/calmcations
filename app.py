@@ -78,11 +78,11 @@ def locations():
 
         return jsonify(new_location.to_dict()), 201
     else:
-        timeout_minutes = int(request.args.get('timeout', 15))
-        cutoff_time = datetime.utcnow() - timedelta(minutes=timeout_minutes)
+        # timeout_minutes = int(request.args.get('timeout', 15))
+        # cutoff_time = datetime.utcnow() - timedelta(minutes=timeout_minutes)
 
-        SpotLocation.query.filter(SpotLocation.timestamp < cutoff_time).delete()
-        db.session.commit()
+        # SpotLocation.query.filter(SpotLocation.timestamp < cutoff_time).delete()
+        # db.session.commit()
 
         locations = SpotLocation.query.all()
         return jsonify([loc.to_dict() for loc in locations])
@@ -160,14 +160,24 @@ def load_mock_data():
         if lat is None or lon is None or name is None:
             continue  # skip invalid entries
 
-        location = SpotLocation(lat=lat, lon=lon, name=name)
+        # location = SpotLocation(lat=lat, lon=lon, name=name)
+        timestamp = None
+        if "timestamp" in loc:
+            timestamp = datetime.fromisoformat(loc["timestamp"])
+        location = SpotLocation(lat=lat, lon=lon, name=name, timestamp=timestamp or datetime.utcnow())
+
         db.session.add(location)
         db.session.flush()  # get location.id before commit
 
         for c in checkins:
             user_id = c.get("user_id", str(uuid.uuid4()))
             tags = ",".join(c.get("tags", []))
-            checkin = CheckinHistory(location_id=location.id, user_id=user_id, tags=tags)
+            timestamp = None
+            if "timestamp" in c:
+                timestamp  = datetime.fromisoformat(c.get("timestamp"))
+            else:
+                timestamp = datetime.utcnow()
+            checkin = CheckinHistory(location_id=location.id, user_id=user_id, tags=tags, timestamp=timestamp)
             db.session.add(checkin)
 
         created_locations.append(location.to_dict())
