@@ -24,20 +24,31 @@ The heat of a spot slowly dissipate till the point old checkins are irrelevant.
 
 In such a way we would like to propose an algorithm that favour spots that have been popular in the recent times.
 
+## Run the project
 
-## TODO
+create a virtualenv
+```
+python3 -m venv .venv
+```
 
-- [ ] user actions
-	- [x] create new point
-	- [ ] checkin existing point
-		- [x] create checkin
-		- [x] tag:
-	- [ ] query nearby points
-		- [ ] sorting them by
-		    - [ ] tag
-		- [ ] query by location (not to load all of them)
-    - [x] load fixtures
+activate virtualenv
+```
+source .venv/bin/activate
+```
 
+install requirements
+```
+pip install -r requirements.txt
+```
+
+run the server
+```
+ python app.py
+```
+
+visit `http://localhost:20778/`
+
+for a better experience please preload the fixtures as described here:
 
 ## preload fixtures
 
